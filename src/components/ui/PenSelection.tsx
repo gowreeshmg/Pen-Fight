@@ -96,6 +96,15 @@ export default function PenSelection() {
   const [selectedPen, setSelectedPen] = useState<PenType>('butterflow');
 
   useEffect(() => {
+    // Attempt to lock screen orientation to portrait on mobile devices globally
+    if (typeof screen !== 'undefined' && screen.orientation && (screen.orientation as any).lock) {
+      (screen.orientation as any).lock('portrait-primary').catch(() => {
+        // Silently fail if not supported or not in fullscreen
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     if (players.length === 0) setPlayerCount(2);
   }, []);
 
@@ -106,6 +115,11 @@ export default function PenSelection() {
     setCurrentPlayer(1);
     setSelectedPen('butterflow');
     setTimeout(() => scrollRef.current?.scrollTo({ left: 0 }), 50);
+  };
+
+  const handleBackToSetup = () => {
+    setPhase('setup');
+    setCurrentPlayer(1);
   };
 
   const handleConfirmPen = () => {
@@ -228,6 +242,11 @@ export default function PenSelection() {
       <div className="absolute inset-0 bg-cover bg-center opacity-5" style={{ backgroundImage: 'url(/desk.jpg)' }} />
 
       <div className="relative z-10 flex-shrink-0 pt-6 pb-3 px-6 flex flex-col items-center">
+        <div className="flex justify-between w-full mb-4">
+          <button onClick={handleBackToSetup} className="text-neutral-400 text-sm font-bold border border-neutral-800 px-3 py-1 rounded-lg hover:bg-neutral-900 transition-colors">
+            ← Back
+          </button>
+        </div>
         <div className="flex items-center gap-2 mb-2">
           {Array.from({ length: playerCount }, (_, i) => (
             <div key={i} className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold"
