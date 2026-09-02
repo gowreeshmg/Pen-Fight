@@ -64,6 +64,7 @@ const arenas: { id: ArenaType; name: string; desc: string; tint: string; bg: str
   { id: 'metal_bench', name: 'Metal Bench', desc: 'High friction. Heavy hits required.', tint: '#708090', bg: '/exam_hall.jpg' },
 ];
 
+const PLAYER_COLORS = ['#F59E0B', '#EF4444', '#10B981', '#3B82F6'];
 function StatBar({ label, value }: { label: string; value: string }) {
   const map: Record<string, number> = { 
     'Very Low': 1, Low: 2, Medium: 3, High: 4, 'Very High': 5, 'Extreme': 5,
@@ -105,6 +106,8 @@ export default function PenSelection() {
   useEffect(() => {
     if (players.length === 0) setPlayerCount(2);
   }, []);
+
+  const currentColor = PLAYER_COLORS[(currentPlayer - 1) % 4];
 
   const handleStart = () => {
     setPhase('select');
@@ -157,7 +160,7 @@ export default function PenSelection() {
                   <button key={n} onClick={() => setPlayerCount(n)}
                     className="w-16 h-16 rounded-xl text-2xl font-black transition-all duration-150"
                     style={{
-                      background: playerCount === n ? '#F59E0B' : 'transparent',
+                      background: playerCount === n ? currentColor : 'transparent',
                       color: playerCount === n ? '#000' : '#666',
                       border: playerCount === n ? 'none' : '2px solid #333',
                       transform: playerCount === n ? 'scale(1.05)' : 'scale(1)',
@@ -170,14 +173,14 @@ export default function PenSelection() {
             <div className="flex gap-2 justify-center flex-wrap">
               {Array.from({ length: playerCount }, (_, i) => (
                 <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
-                  style={{ background: '#F59E0B15', color: '#F59E0B', border: `1px solid #F59E0B30` }}>
-                  P{i + 1} <div className="w-2 h-2 rounded-full" style={{ background: '#F59E0B' }} />
+                  style={{ background: PLAYER_COLORS[i] + '15', color: PLAYER_COLORS[i], border: `1px solid ${PLAYER_COLORS[i]}30` }}>
+                  P{i + 1} <div className="w-2 h-2 rounded-full" style={{ background: PLAYER_COLORS[i] }} />
                 </div>
               ))}
             </div>
           </div>
           <button onClick={handleStart} className="mt-8 px-12 py-4 rounded-xl text-black font-black text-xl tracking-wide transition-all hover:opacity-90"
-            style={{ background: '#F59E0B', boxShadow: `0 0 40px #F59E0B40` }}>
+            style={{ background: currentColor, boxShadow: `0 0 40px ${currentColor}40` }}>
             START SETUP
           </button>
         </div>
@@ -247,9 +250,9 @@ export default function PenSelection() {
           {Array.from({ length: playerCount }, (_, i) => (
             <div key={i} className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold"
               style={{
-                background: i + 1 === currentPlayer ? '#F59E0B25' : 'transparent',
-                color: i + 1 < currentPlayer ? '#333' : '#F59E0B',
-                border: `1px solid ${i + 1 === currentPlayer ? '#F59E0B60' : '#222'}`,
+                background: i + 1 === currentPlayer ? PLAYER_COLORS[i] + '25' : 'transparent',
+                color: i + 1 < currentPlayer ? '#333' : PLAYER_COLORS[i],
+                border: `1px solid ${i + 1 === currentPlayer ? PLAYER_COLORS[i] + '60' : '#222'}`,
                 textDecoration: i + 1 < currentPlayer ? 'line-through' : 'none',
               }}>
               P{i + 1}
@@ -257,7 +260,7 @@ export default function PenSelection() {
           ))}
         </div>
         <h1 className="text-3xl font-black text-white tracking-tight">
-          Player {currentPlayer} <span style={{ color: '#F59E0B' }}>— Choose Weapon</span>
+          Player {currentPlayer} <span style={{ color: currentColor }}>— Choose Weapon</span>
         </h1>
       </div>
 
@@ -273,17 +276,17 @@ export default function PenSelection() {
                 className="flex-shrink-0 cursor-pointer transition-all duration-200 flex flex-col"
                 style={{ width: '240px', scrollSnapAlign: 'center', transform: isSelected ? 'translateY(-4px) scale(1.02)' : 'scale(1)' }}>
                 <div className="flex flex-col h-full rounded-xl overflow-hidden"
-                  style={{ background: isSelected ? '#1a1a1a' : '#111', border: `1.5px solid ${isSelected ? '#F59E0B' : '#222'}`, boxShadow: isSelected ? `0 8px 30px #F59E0B25` : 'none' }}>
+                  style={{ background: isSelected ? '#1a1a1a' : '#111', border: `1.5px solid ${isSelected ? currentColor : '#222'}`, boxShadow: isSelected ? `0 8px 30px ${currentColor}25` : 'none' }}>
                   <div className="h-40 flex items-center justify-center relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ede8d0, #d4c89a)' }}>
                     <img src={pen.imageSrc} alt={pen.name} className="h-36 object-contain" style={{ mixBlendMode: 'multiply', filter: 'contrast(1.05)' }} />
-                    {isSelected && <div className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center text-black text-xs font-black" style={{ background: '#F59E0B' }}>✓</div>}
+                    {isSelected && <div className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center text-black text-xs font-black" style={{ background: currentColor }}>✓</div>}
                   </div>
                   <div className="p-4 flex flex-col gap-2.5 flex-1">
                     <div>
                       <h3 className="text-white font-bold text-sm leading-tight">{pen.name}</h3>
-                      <p className="text-xs mt-0.5" style={{ color: '#F59E0B' }}>{pen.subtitle}</p>
+                      <p className="text-xs mt-0.5" style={{ color: currentColor }}>{pen.subtitle}</p>
                     </div>
-                    <div className="flex flex-col gap-1.5" style={{ color: '#F59E0B' }}>
+                    <div className="flex flex-col gap-1.5" style={{ color: currentColor }}>
                       <StatBar label="Weight" value={pen.stats.weight} />
                       <StatBar label="Friction" value={pen.stats.friction} />
                       <StatBar label="Speed" value={pen.stats.speed} />
@@ -307,7 +310,7 @@ export default function PenSelection() {
           </div>
           <button onClick={handleConfirmPen}
             className="flex-shrink-0 px-6 py-3 rounded-xl font-black text-sm text-black transition-all hover:opacity-90 active:scale-95"
-            style={{ background: '#F59E0B' }}>
+            style={{ background: currentColor }}>
             {currentPlayer < playerCount ? 'NEXT PLAYER →' : 'NEXT: ARENA →'}
           </button>
         </div>

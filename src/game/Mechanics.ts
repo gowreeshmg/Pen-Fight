@@ -104,15 +104,13 @@ export class SlingshotMechanic {
     const penType = labelParts.length > 2 ? (labelParts[2] as PenType) : 'butterflow';
     const stats = PEN_CONFIGS[penType] || PEN_CONFIGS['butterflow'];
 
-    // Speed scales based on pull distance, but is inversely proportional to the pen's mass!
-    // A light pen (V7) will fly much faster than a heavy pen (Parker) at the same power.
-    // Boosted BASE_MAX_SPEED so 100% power throws light pens out of bounds!
-    // Scaled down from 45 to 28 because users reported pens flying out of screen too easily at 50% power
-    const BASE_MAX_SPEED = 28; 
+    // Reduced the mass exponent penalty from 0.6 to 0.3 so heavy pens can still move fast at 100% power
+    // Re-balanced the BASE_MAX_SPEED to 8.5 to match the new curve (Heavy pens: ~1.2 speed, Light pens: ~1.6 speed)
+    const BASE_MAX_SPEED = 8.5; 
     const mass = this.selectedBody.mass;
     
     // Explicit speed multiplier from pen stats
-    const rawSpeed = (clampedDist / MAX_PULL) * (BASE_MAX_SPEED / Math.pow(mass, 0.6));
+    const rawSpeed = (clampedDist / MAX_PULL) * (BASE_MAX_SPEED / Math.pow(mass, 0.3));
     const finalSpeed = rawSpeed * stats.speedMultiplier;
 
     // Direction is opposite of drag (pull back = shoot forward)
