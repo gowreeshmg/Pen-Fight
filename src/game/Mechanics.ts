@@ -58,7 +58,7 @@ export class SlingshotMechanic {
     const mousePos = this.getCanvasPoint(clientX, clientY, canvas);
     const bodies = Matter.Composite.allBodies(this.engine.world);
     const targetLabel = `player_${this.currentPlayerId}`;
-    const playerPens = bodies.filter((b) => b.label === targetLabel);
+    const playerPens = bodies.filter((b) => b.label.startsWith(targetLabel));
     const clicked = Matter.Query.point(playerPens, mousePos);
 
     if (clicked.length > 0) {
