@@ -42,8 +42,8 @@ export default function MatterEngine() {
 
   useEffect(() => {
     // Attempt to lock screen orientation to portrait on mobile devices
-    if (screen.orientation && screen.orientation.lock) {
-      screen.orientation.lock('portrait-primary').catch(() => {
+    if (screen.orientation && (screen.orientation as any).lock) {
+      (screen.orientation as any).lock('portrait-primary').catch(() => {
         // Silently fail if not supported or not in fullscreen
       });
     }
