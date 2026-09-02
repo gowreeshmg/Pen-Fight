@@ -137,7 +137,7 @@ export default function PenSelection() {
         <div className="absolute inset-0 bg-cover bg-center opacity-5" style={{ backgroundImage: 'url(/desk.jpg)' }} />
         <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-sm w-full">
           <div className="text-5xl mb-6 select-none">✒️</div>
-          <h1 className="text-5xl font-black text-white tracking-tighter mb-1">PEN WARS</h1>
+          <h1 className="text-5xl font-black text-white tracking-tighter mb-1">PEN FIGHT</h1>
           <p className="text-neutral-500 text-sm tracking-widest uppercase mb-10">Desk Fighter · School Edition</p>
           <div className="w-full bg-neutral-900 border border-neutral-800 rounded-2xl p-6 flex flex-col gap-6">
             <div>
@@ -161,17 +161,15 @@ export default function PenSelection() {
               {Array.from({ length: playerCount }, (_, i) => (
                 <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
                   style={{ background: PLAYER_COLORS[i] + '15', color: PLAYER_COLORS[i], border: `1px solid ${PLAYER_COLORS[i]}30` }}>
-                  <div className="w-1.5 h-1.5 rounded-full" style={{ background: PLAYER_COLORS[i] }} />
-                  P{i + 1}
+                  P{i + 1} <div className="w-2 h-2 rounded-full" style={{ background: PLAYER_COLORS[i] }} />
                 </div>
               ))}
             </div>
-            <button onClick={handleStart}
-              className="w-full py-4 rounded-xl text-black font-black text-lg tracking-wide transition-all hover:opacity-90 active:scale-95"
-              style={{ background: '#F59E0B' }}>
-              CHOOSE PENS →
-            </button>
           </div>
+          <button onClick={handleStart} className="mt-8 px-12 py-4 rounded-xl text-black font-black text-xl tracking-wide transition-all hover:opacity-90"
+            style={{ background: currentColor, boxShadow: `0 0 40px ${currentColor}40` }}>
+            START SETUP
+          </button>
         </div>
       </div>
     );
@@ -180,7 +178,7 @@ export default function PenSelection() {
   // ───── ARENA SELECTION SCREEN ─────
   if (phase === 'arena') {
     return (
-      <div className="h-[100dvh] flex flex-col items-center justify-center bg-neutral-950 relative overflow-y-auto py-12">
+      <div className="h-[100dvh] flex flex-col items-center justify-start bg-neutral-950 relative overflow-y-auto py-12 pt-20">
         <div className="absolute inset-0 bg-cover bg-center opacity-5" style={{ backgroundImage: 'url(/desk.jpg)' }} />
         <div className="relative z-10 flex flex-col items-center w-full max-w-4xl px-6">
           <h1 className="text-3xl font-black text-white tracking-tight mb-8">Select Battlefield</h1>

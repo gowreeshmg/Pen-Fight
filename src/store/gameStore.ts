@@ -12,19 +12,19 @@ export interface PenStats {
 
 export const PEN_CONFIGS: Record<PenType, PenStats> = {
   // Gripper: Heavy, High Friction, Medium Speed
-  gripper:    { weight: 1.5,  restitution: 0.4, speedMultiplier: 1.0, gripMultiplier: 1.6 },
+  gripper:    { weight: 1.4,  restitution: 0.4, speedMultiplier: 1.0, gripMultiplier: 1.6 },
   // Parker: Super Heavy, Medium Friction, Low Speed
-  parker:     { weight: 2.8,  restitution: 0.2, speedMultiplier: 0.7, gripMultiplier: 1.0 },
+  parker:     { weight: 2.2,  restitution: 0.2, speedMultiplier: 0.85, gripMultiplier: 1.0 },
   // Butterflow: Medium, Low Friction, High Speed
-  butterflow: { weight: 1.0,  restitution: 0.5, speedMultiplier: 1.3, gripMultiplier: 0.7 },
+  butterflow: { weight: 1.2,  restitution: 0.5, speedMultiplier: 1.2, gripMultiplier: 0.7 },
   // Hero: Very Heavy, Medium Friction, Medium Speed
-  hero:       { weight: 2.2,  restitution: 0.3, speedMultiplier: 1.0, gripMultiplier: 1.0 },
+  hero:       { weight: 1.8,  restitution: 0.3, speedMultiplier: 1.0, gripMultiplier: 1.0 },
   // Pinpoint: Light, Low Friction, Very High Speed
-  pinpoint:   { weight: 0.7,  restitution: 0.6, speedMultiplier: 1.6, gripMultiplier: 0.7 },
+  pinpoint:   { weight: 1.0,  restitution: 0.6, speedMultiplier: 1.4, gripMultiplier: 0.7 },
   // Trimax: Heavy, Medium Friction, High Speed
-  trimax:     { weight: 1.8,  restitution: 0.3, speedMultiplier: 1.3, gripMultiplier: 1.0 },
+  trimax:     { weight: 1.6,  restitution: 0.3, speedMultiplier: 1.2, gripMultiplier: 1.0 },
   // V7: Very Light, Very Low Friction, Extreme Speed
-  v7:         { weight: 0.5,  restitution: 0.8, speedMultiplier: 2.0, gripMultiplier: 0.4 },
+  v7:         { weight: 0.8,  restitution: 0.8, speedMultiplier: 1.6, gripMultiplier: 0.4 },
 };
 
 // Table friction applied per-frame as a velocity damping factor
