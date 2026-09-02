@@ -107,7 +107,8 @@ export class SlingshotMechanic {
     // Speed scales based on pull distance, but is inversely proportional to the pen's mass!
     // A light pen (V7) will fly much faster than a heavy pen (Parker) at the same power.
     // Boosted BASE_MAX_SPEED so 100% power throws light pens out of bounds!
-    const BASE_MAX_SPEED = 45; 
+    // Scaled down from 45 to 28 because users reported pens flying out of screen too easily at 50% power
+    const BASE_MAX_SPEED = 28; 
     const mass = this.selectedBody.mass;
     
     // Explicit speed multiplier from pen stats
