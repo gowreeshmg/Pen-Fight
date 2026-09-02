@@ -107,27 +107,19 @@ export class SlingshotMechanic {
     const dirX = dx / distance;
     const dirY = dy / distance;
 
-    // Use applyForce instead of setVelocity for realistic physics!
-    // Heavy pens will naturally accelerate slower and hit harder due to mass.
-    const forceMagnitude = (clampedDist / MAX_PULL) * 0.08 * stats.speedMultiplier;
+    // Use a square-root mass curve for force.
+    // This allows lightweight pens to accelerate exponentially faster than heavy pens
+    // while still giving heavy pens enough baseline force to move.
+    const perceivedMass = Math.pow(this.selectedBody.mass, 0.5);
+    const forceMagnitude = (clampedDist / MAX_PULL) * 0.11 * stats.speedMultiplier * perceivedMass;
     
-    Matter.Body.applyForce(this.selectedBody, this.selectedBody.position, {
-      x: dirX * forceMagnitude * this.selectedBody.mass,
-      y: dirY * forceMagnitude * this.selectedBody.mass
+    // CRITICAL: We apply the force exactly at the dragStartPoint (where the user clicked the pen).
+    // This means if they grabbed the corner of the pen, Matter.js will natively calculate
+    // the exact authentic torque and spin the pen like crazy, just like in real life!
+    Matter.Body.applyForce(this.selectedBody, this.dragStartPoint, {
+      x: dirX * forceMagnitude,
+      y: dirY * forceMagnitude
     });
-
-    // Calculate torque based on exact click offset from center of mass
-    const bodyCenter = this.selectedBody.position;
-    const offsetX = this.dragStartPoint.x - bodyCenter.x;
-    const offsetY = this.dragStartPoint.y - bodyCenter.y;
-
-    const spinBase = (offsetX * dirY - offsetY * dirX);
-    
-    // Significantly reduced spin multiplier so it behaves realistically
-    const spinMultiplier = 0.0015; 
-    const spin = spinBase * spinMultiplier * (clampedDist / MAX_PULL);
-    
-    Matter.Body.setAngularVelocity(this.selectedBody, spin);
 
     this.isDragging = false;
     this.selectedBody = null;

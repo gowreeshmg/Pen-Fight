@@ -284,7 +284,8 @@ export default function MatterEngine() {
       render.canvas.remove();
       Matter.Engine.clear(newEngine);
     };
-  }, [players, selectedArena]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [players.length, selectedArena]);
 
   useEffect(() => {
     if (slingshotRef.current && players.length > 0) {
