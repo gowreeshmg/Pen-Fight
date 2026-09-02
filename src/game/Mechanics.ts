@@ -99,28 +99,21 @@ export class SlingshotMechanic {
     const MAX_PULL = 150;
     const clampedDist = Math.min(distance, MAX_PULL);
     
-    // Extract penType from label (format: player_1_butterflow)
     const labelParts = this.selectedBody.label.split('_');
     const penType = labelParts.length > 2 ? (labelParts[2] as PenType) : 'butterflow';
     const stats = PEN_CONFIGS[penType] || PEN_CONFIGS['butterflow'];
-
-    // Speed scales based on pull distance, but is inversely proportional to the pen's mass!
-    // A light pen (Pinpoint) will fly much faster than a heavy pen (Parker) at the same power.
-    const BASE_MAX_SPEED = 38;
-    const mass = this.selectedBody.mass;
-    
-    // Explicit speed multiplier from pen stats
-    const rawSpeed = (clampedDist / MAX_PULL) * (BASE_MAX_SPEED / Math.sqrt(mass));
-    const finalSpeed = rawSpeed * stats.speedMultiplier;
 
     // Direction is opposite of drag (pull back = shoot forward)
     const dirX = dx / distance;
     const dirY = dy / distance;
 
-    // Apply linear velocity directly for predictable power scaling
-    Matter.Body.setVelocity(this.selectedBody, {
-      x: dirX * finalSpeed,
-      y: dirY * finalSpeed,
+    // Use applyForce instead of setVelocity for realistic physics!
+    // Heavy pens will naturally accelerate slower and hit harder due to mass.
+    const forceMagnitude = (clampedDist / MAX_PULL) * 0.08 * stats.speedMultiplier;
+    
+    Matter.Body.applyForce(this.selectedBody, this.selectedBody.position, {
+      x: dirX * forceMagnitude * this.selectedBody.mass,
+      y: dirY * forceMagnitude * this.selectedBody.mass
     });
 
     // Calculate torque based on exact click offset from center of mass
@@ -128,14 +121,11 @@ export class SlingshotMechanic {
     const offsetX = this.dragStartPoint.x - bodyCenter.x;
     const offsetY = this.dragStartPoint.y - bodyCenter.y;
 
-    // Cross product gives the spin direction and magnitude
     const spinBase = (offsetX * dirY - offsetY * dirX);
     
-    // Torque scales exponentially with speed so hard edge-flicks spin violently, 
-    // but soft flicks or center flicks barely spin at all.
-    // The multiplier is increased to ensure noticeable rotation even at moderate power.
-    const spinMultiplier = 0.025; 
-    const spin = spinBase * spinMultiplier * Math.pow((clampedDist / MAX_PULL), 1.5);
+    // Significantly reduced spin multiplier so it behaves realistically
+    const spinMultiplier = 0.0015; 
+    const spin = spinBase * spinMultiplier * (clampedDist / MAX_PULL);
     
     Matter.Body.setAngularVelocity(this.selectedBody, spin);
 

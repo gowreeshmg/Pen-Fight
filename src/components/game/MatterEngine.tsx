@@ -361,23 +361,23 @@ export default function MatterEngine() {
         })}
       </div>
 
-      {/* Mobile Right Vertical Status Bar (Rotated for landscape viewing) */}
+      {/* Mobile Right Vertical Status Bar (Rotated 90deg for landscape viewing) */}
       <div className="flex md:hidden absolute right-1 top-1/2 -translate-y-1/2 z-30 flex-col gap-8">
         {players.map((p, i) => {
           const isOut = eliminated.includes(p.id);
           const isActive = activeTurnIndex === i && !isOut;
           return (
-            <div key={p.id} className="flex flex-col items-center gap-1 p-3 rounded-xl text-xs font-bold transition-all duration-300 -rotate-90"
+            <div key={p.id} className="flex flex-col items-center gap-0.5 p-1.5 rounded-lg text-xs font-bold transition-all duration-300 rotate-90"
               style={{ 
                 background: isOut ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.6)', 
                 color: isOut ? '#444' : PLAYER_COLORS[i], 
                 border: `1.5px solid ${isOut ? '#333' : isActive ? PLAYER_COLORS[i] : PLAYER_COLORS[i] + '30'}`, 
                 boxShadow: isActive ? `0 0 15px ${PLAYER_COLORS[i]}60` : 'none',
-                transform: isActive ? 'scale(1.1) rotate(-90deg)' : 'scale(1) rotate(-90deg)', 
+                transform: isActive ? 'scale(1.1)' : 'scale(1)', 
                 textDecoration: isOut ? 'line-through' : 'none' 
               }}>
-              <span className="text-lg">{isOut ? '💀' : `P${p.id}`}</span>
-              <span className="text-[10px] uppercase tracking-wider">{p.penType.substring(0, 4)}</span>
+              <span className="text-sm">{isOut ? '💀' : `P${p.id}`}</span>
+              <span className="text-[9px] uppercase tracking-wider">{p.penType.substring(0, 4)}</span>
             </div>
           );
         })}
@@ -385,9 +385,9 @@ export default function MatterEngine() {
 
       <div className="hidden md:block absolute top-4 left-4 z-30 text-xs text-white/50 bg-black/50 backdrop-blur px-3 py-2 rounded-lg">Drag back on P{activePlayer.id}'s pen<br /><span className="text-amber-400/80">Tip: Click edge for spin!</span></div>
       
-      {/* End Match Button - Rotated for landscape viewing on Mobile */}
+      {/* End Match Button - Rotated 90deg for landscape viewing on Mobile */}
       <div className="absolute top-12 right-2 md:top-4 md:right-4 z-30 flex">
-        <a href="/" className="px-5 py-2 bg-neutral-900/90 hover:bg-neutral-800 text-white text-sm rounded-lg font-medium transition-colors border border-neutral-700 whitespace-nowrap -rotate-90 md:rotate-0 translate-x-6 md:translate-x-0">End Match</a>
+        <a href="/" className="px-4 py-1.5 bg-neutral-900/90 hover:bg-neutral-800 text-white text-xs rounded-lg font-medium transition-colors border border-neutral-700 whitespace-nowrap rotate-90 md:rotate-0 translate-x-4 md:translate-x-0">End Match</a>
       </div>
     </div>
   );

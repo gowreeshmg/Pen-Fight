@@ -116,6 +116,9 @@ export default function PenSelection() {
       scrollRef.current?.scrollTo({ left: 0, behavior: 'smooth' });
     } else {
       setPhase('arena');
+      // Reset scroll position to top when switching to the arena screen
+      window.scrollTo(0, 0);
+      document.querySelector('.overflow-y-auto')?.scrollTo(0, 0);
     }
   };
 
