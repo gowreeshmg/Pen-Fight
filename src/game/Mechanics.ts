@@ -104,14 +104,21 @@ export class SlingshotMechanic {
     const penType = labelParts.length > 2 ? (labelParts[2] as PenType) : 'butterflow';
     const stats = PEN_CONFIGS[penType] || PEN_CONFIGS['butterflow'];
 
-    // Tuned base speed to 140.
-    // Heavy pen at 50% force -> initial velocity ~10.2 -> travels ~500 pixels (half screen)
-    // Light pen at 100% force -> initial velocity ~28 -> travels ~2800 pixels (flies off screen)
-    const BASE_MAX_SPEED = 140; 
+    // Use an exponential power curve (x^1.5) to mimic human finger flicking physics.
+    // 10% force -> 3.1% actual speed (moves slightly)
+    // 50% force -> 35% actual speed (moves a bit more)
+    // 100% force -> 100% actual speed (flies across screen)
+    const powerRatio = clampedDist / MAX_PULL;
+    const powerCurve = Math.pow(powerRatio, 1.5);
+    
+    // Base max speed set to 85.
+    // Light pens will move across the screen at 100% force (1000+ pixels)
+    // Heavy pens will move ~80% across the screen at 100% force
+    const BASE_MAX_SPEED = 85; 
     const mass = this.selectedBody.mass;
     
     // Explicit speed multiplier from pen stats
-    const rawSpeed = (clampedDist / MAX_PULL) * (BASE_MAX_SPEED / Math.pow(mass, 0.3));
+    const rawSpeed = powerCurve * (BASE_MAX_SPEED / Math.pow(mass, 0.3));
     const finalSpeed = rawSpeed * stats.speedMultiplier;
 
     // Direction is opposite of drag (pull back = shoot forward)
