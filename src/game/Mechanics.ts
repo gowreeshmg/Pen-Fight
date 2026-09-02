@@ -104,9 +104,10 @@ export class SlingshotMechanic {
     const penType = labelParts.length > 2 ? (labelParts[2] as PenType) : 'butterflow';
     const stats = PEN_CONFIGS[penType] || PEN_CONFIGS['butterflow'];
 
-    // Reduced the mass exponent penalty from 0.6 to 0.3 so heavy pens can still move fast at 100% power
-    // Re-balanced the BASE_MAX_SPEED to 8.5 to match the new curve (Heavy pens: ~1.2 speed, Light pens: ~1.6 speed)
-    const BASE_MAX_SPEED = 8.5; 
+    // Tuned base speed to 140.
+    // Heavy pen at 50% force -> initial velocity ~10.2 -> travels ~500 pixels (half screen)
+    // Light pen at 100% force -> initial velocity ~28 -> travels ~2800 pixels (flies off screen)
+    const BASE_MAX_SPEED = 140; 
     const mass = this.selectedBody.mass;
     
     // Explicit speed multiplier from pen stats
