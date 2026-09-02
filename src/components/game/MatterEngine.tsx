@@ -30,7 +30,6 @@ export default function MatterEngine() {
   const canvasSizeRef = useRef({ width: 0, height: 0 });
 
   const { players, selectedArena, currentTurn, nextTurn, eliminatePlayer } = useGameStore();
-  const [uiTurn, setUiTurn] = useState(0);
   const [power, setPower] = useState(0);
   const [trajectory, setTrajectory] = useState<{ start: { x: number; y: number } | null; end: { x: number; y: number } | null; }>({ start: null, end: null });
   const [eliminated, setEliminated] = useState<number[]>([]);
@@ -274,7 +273,7 @@ export default function MatterEngine() {
     slingshot.attach(
       render.canvas,
       (start, end, pw) => { setTrajectory({ start, end }); setPower(pw); },
-      () => { nextTurn(); setUiTurn((t) => t + 1); setPower(0); setTrajectory({ start: null, end: null }); }
+      () => { nextTurn(); setPower(0); setTrajectory({ start: null, end: null }); }
     );
 
     return () => {
@@ -298,7 +297,7 @@ export default function MatterEngine() {
     <div className="w-full h-full flex items-center justify-center bg-neutral-900 text-white"><a href="/" className="px-8 py-4 bg-amber-500 text-black rounded-xl font-bold">← Go Back</a></div>
   );
 
-  const activeTurnIndex = uiTurn % players.length;
+  const activeTurnIndex = currentTurn;
   const activePlayer = players[activeTurnIndex];
   const activeColor = PLAYER_COLORS[activeTurnIndex];
   const powerColor = power < 40 ? '#10B981' : power < 70 ? '#F59E0B' : '#EF4444';

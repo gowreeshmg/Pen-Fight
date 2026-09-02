@@ -99,27 +99,45 @@ export class SlingshotMechanic {
     const MAX_PULL = 150;
     const clampedDist = Math.min(distance, MAX_PULL);
     
+    // Extract penType from label (format: player_1_butterflow)
     const labelParts = this.selectedBody.label.split('_');
     const penType = labelParts.length > 2 ? (labelParts[2] as PenType) : 'butterflow';
     const stats = PEN_CONFIGS[penType] || PEN_CONFIGS['butterflow'];
+
+    // Speed scales based on pull distance, but is inversely proportional to the pen's mass!
+    // A light pen (V7) will fly much faster than a heavy pen (Parker) at the same power.
+    // Boosted BASE_MAX_SPEED so 100% power throws light pens out of bounds!
+    const BASE_MAX_SPEED = 45; 
+    const mass = this.selectedBody.mass;
+    
+    // Explicit speed multiplier from pen stats
+    const rawSpeed = (clampedDist / MAX_PULL) * (BASE_MAX_SPEED / Math.pow(mass, 0.6));
+    const finalSpeed = rawSpeed * stats.speedMultiplier;
 
     // Direction is opposite of drag (pull back = shoot forward)
     const dirX = dx / distance;
     const dirY = dy / distance;
 
-    // Use a square-root mass curve for force.
-    // This allows lightweight pens to accelerate exponentially faster than heavy pens
-    // while still giving heavy pens enough baseline force to move.
-    const perceivedMass = Math.pow(this.selectedBody.mass, 0.5);
-    const forceMagnitude = (clampedDist / MAX_PULL) * 0.11 * stats.speedMultiplier * perceivedMass;
-    
-    // CRITICAL: We apply the force exactly at the dragStartPoint (where the user clicked the pen).
-    // This means if they grabbed the corner of the pen, Matter.js will natively calculate
-    // the exact authentic torque and spin the pen like crazy, just like in real life!
-    Matter.Body.applyForce(this.selectedBody, this.dragStartPoint, {
-      x: dirX * forceMagnitude,
-      y: dirY * forceMagnitude
+    // Apply linear velocity directly for predictable power scaling
+    Matter.Body.setVelocity(this.selectedBody, {
+      x: dirX * finalSpeed,
+      y: dirY * finalSpeed,
     });
+
+    // Calculate torque based on exact click offset from center of mass
+    const bodyCenter = this.selectedBody.position;
+    const offsetX = this.dragStartPoint.x - bodyCenter.x;
+    const offsetY = this.dragStartPoint.y - bodyCenter.y;
+
+    // Cross product gives the spin direction and magnitude
+    const spinBase = (offsetX * dirY - offsetY * dirX);
+    
+    // The user explicitly requested MORE rotation than the previous working version.
+    // Increased the multiplier so corner flicks spin aggressively!
+    const spinMultiplier = 0.035; 
+    const spin = spinBase * spinMultiplier * (clampedDist / MAX_PULL);
+    
+    Matter.Body.setAngularVelocity(this.selectedBody, spin);
 
     this.isDragging = false;
     this.selectedBody = null;

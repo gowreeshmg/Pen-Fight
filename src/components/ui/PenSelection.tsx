@@ -277,17 +277,17 @@ export default function PenSelection() {
                 className="flex-shrink-0 cursor-pointer transition-all duration-200 flex flex-col"
                 style={{ width: '240px', scrollSnapAlign: 'center', transform: isSelected ? 'translateY(-4px) scale(1.02)' : 'scale(1)' }}>
                 <div className="flex flex-col h-full rounded-xl overflow-hidden"
-                  style={{ background: isSelected ? '#1a1a1a' : '#111', border: `1.5px solid ${isSelected ? currentColor : '#222'}`, boxShadow: isSelected ? `0 8px 30px ${currentColor}25` : 'none' }}>
+                  style={{ background: isSelected ? '#1a1a1a' : '#111', border: `1.5px solid ${isSelected ? '#F59E0B' : '#222'}`, boxShadow: isSelected ? `0 8px 30px #F59E0B25` : 'none' }}>
                   <div className="h-40 flex items-center justify-center relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ede8d0, #d4c89a)' }}>
                     <img src={pen.imageSrc} alt={pen.name} className="h-36 object-contain" style={{ mixBlendMode: 'multiply', filter: 'contrast(1.05)' }} />
-                    {isSelected && <div className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center text-black text-xs font-black" style={{ background: currentColor }}>✓</div>}
+                    {isSelected && <div className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center text-black text-xs font-black" style={{ background: '#F59E0B' }}>✓</div>}
                   </div>
                   <div className="p-4 flex flex-col gap-2.5 flex-1">
                     <div>
                       <h3 className="text-white font-bold text-sm leading-tight">{pen.name}</h3>
-                      <p className="text-xs mt-0.5" style={{ color: currentColor }}>{pen.subtitle}</p>
+                      <p className="text-xs mt-0.5" style={{ color: '#F59E0B' }}>{pen.subtitle}</p>
                     </div>
-                    <div className="flex flex-col gap-1.5" style={{ color: currentColor }}>
+                    <div className="flex flex-col gap-1.5" style={{ color: '#F59E0B' }}>
                       <StatBar label="Weight" value={pen.stats.weight} />
                       <StatBar label="Friction" value={pen.stats.friction} />
                       <StatBar label="Speed" value={pen.stats.speed} />
