@@ -103,22 +103,17 @@ export class SlingshotMechanic {
     const labelParts = this.selectedBody.label.split('_');
     const penType = labelParts.length > 2 ? (labelParts[2] as PenType) : 'butterflow';
     const stats = PEN_CONFIGS[penType] || PEN_CONFIGS['butterflow'];
-
-    // Use an exponential power curve (x^1.5) to mimic human finger flicking physics.
-    // 10% force -> 3.1% actual speed (moves slightly)
-    // 50% force -> 35% actual speed (moves a bit more)
-    // 100% force -> 100% actual speed (flies across screen)
+    // Use square root curve so that distance (which scales with v^2) scales linearly with applied force percentage.
+    // 10% force -> 10% distance. 50% force -> 50% distance. 100% force -> 100% distance.
     const powerRatio = clampedDist / MAX_PULL;
-    const powerCurve = Math.pow(powerRatio, 1.5);
+    const powerCurve = Math.sqrt(powerRatio);
     
-    // Base max speed set to 85.
-    // Light pens will move across the screen at 100% force (1000+ pixels)
-    // Heavy pens will move ~80% across the screen at 100% force
-    const BASE_MAX_SPEED = 85; 
-    const mass = this.selectedBody.mass;
+    // Base max speed set to 65. Mass penalty removed (EXP=0) because individual pen stats (speedMultiplier & gripMultiplier)
+    // naturally handle the heavy vs light differences perfectly now.
+    const BASE_MAX_SPEED = 65; 
     
     // Explicit speed multiplier from pen stats
-    const rawSpeed = powerCurve * (BASE_MAX_SPEED / Math.pow(mass, 0.3));
+    const rawSpeed = powerCurve * BASE_MAX_SPEED;
     const finalSpeed = rawSpeed * stats.speedMultiplier;
 
     // Direction is opposite of drag (pull back = shoot forward)
@@ -142,7 +137,7 @@ export class SlingshotMechanic {
     // Tamed the spin multiplier significantly to prevent the "beyblade" effect.
     // It will now rotate naturally a few times when hit on the edges, but won't spin thousands of times.
     const spinMultiplier = 0.004; 
-    const spin = spinBase * spinMultiplier * Math.pow((clampedDist / MAX_PULL), 1.5);
+    const spin = spinBase * spinMultiplier * powerCurve;
     
     Matter.Body.setAngularVelocity(this.selectedBody, spin);
 
