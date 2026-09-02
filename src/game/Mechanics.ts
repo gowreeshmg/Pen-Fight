@@ -132,9 +132,9 @@ export class SlingshotMechanic {
     // Cross product gives the spin direction and magnitude
     const spinBase = (offsetX * dirY - offsetY * dirX);
     
-    // The precise multiplier and non-linear power curve you requested!
-    // This perfectly squashes accidental center-spins while massively amplifying hard corner flicks.
-    const spinMultiplier = 0.025; 
+    // Tamed the spin multiplier significantly to prevent the "beyblade" effect.
+    // It will now rotate naturally a few times when hit on the edges, but won't spin thousands of times.
+    const spinMultiplier = 0.004; 
     const spin = spinBase * spinMultiplier * Math.pow((clampedDist / MAX_PULL), 1.5);
     
     Matter.Body.setAngularVelocity(this.selectedBody, spin);

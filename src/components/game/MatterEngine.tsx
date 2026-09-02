@@ -16,8 +16,6 @@ const PEN_IMAGE_SOURCES: Record<string, string> = {
   v7:         '/pens/v7.png',
 };
 
-const PLAYER_COLORS = ['#F59E0B', '#EF4444', '#10B981', '#3B82F6'];
-
 type PenBody = { body: Matter.Body; penType: string; playerId: number };
 
 export default function MatterEngine() {
@@ -305,7 +303,6 @@ export default function MatterEngine() {
 
   const activeTurnIndex = currentTurn;
   const activePlayer = players[activeTurnIndex];
-  const activeColor = PLAYER_COLORS[activeTurnIndex];
   const powerColor = power < 40 ? '#10B981' : power < 70 ? '#F59E0B' : '#EF4444';
 
   return (
@@ -327,10 +324,10 @@ export default function MatterEngine() {
 
       {trajectory.start && trajectory.end && (
         <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 20 }}>
-          <defs><marker id="arrowHead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill={activeColor} /></marker></defs>
+          <defs><marker id="arrowHead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#F59E0B" /></marker></defs>
           <line x1={trajectory.start.x} y1={trajectory.start.y} x2={trajectory.end.x} y2={trajectory.end.y} stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeDasharray="5,5" />
-          <line x1={trajectory.start.x} y1={trajectory.start.y} x2={trajectory.start.x * 2 - trajectory.end.x} y2={trajectory.start.y * 2 - trajectory.end.y} stroke={activeColor} strokeWidth="2.5" strokeDasharray="8,6" markerEnd="url(#arrowHead)" opacity="0.9" />
-          <circle cx={trajectory.start.x} cy={trajectory.start.y} r="6" fill={activeColor} />
+          <line x1={trajectory.start.x} y1={trajectory.start.y} x2={trajectory.start.x * 2 - trajectory.end.x} y2={trajectory.start.y * 2 - trajectory.end.y} stroke="#F59E0B" strokeWidth="2.5" strokeDasharray="8,6" markerEnd="url(#arrowHead)" opacity="0.9" />
+          <circle cx={trajectory.start.x} cy={trajectory.start.y} r="6" fill="#F59E0B" />
         </svg>
       )}
 
@@ -347,9 +344,9 @@ export default function MatterEngine() {
       )}
 
       {/* Desktop Top Active Indicator */}
-      <div className="hidden md:flex absolute top-4 left-1/2 -translate-x-1/2 z-30 items-center gap-3 px-5 py-2.5 rounded-full" style={{ background: 'rgba(0,0,0,0.78)', backdropFilter: 'blur(12px)', border: `1.5px solid ${activeColor}60`, boxShadow: `0 4px 24px ${activeColor}30` }}>
-        <div className="w-2.5 h-2.5 rounded-full animate-pulse" style={{ background: activeColor }} />
-        <span className="font-bold text-sm tracking-wider" style={{ color: activeColor }}>PLAYER {activePlayer.id}</span>
+      <div className="hidden md:flex absolute top-4 left-1/2 -translate-x-1/2 z-30 items-center gap-3 px-5 py-2.5 rounded-full" style={{ background: 'rgba(0,0,0,0.78)', backdropFilter: 'blur(12px)', border: `1.5px solid #F59E0B60`, boxShadow: `0 4px 24px #F59E0B30` }}>
+        <div className="w-2.5 h-2.5 rounded-full animate-pulse" style={{ background: '#F59E0B' }} />
+        <span className="font-bold text-sm tracking-wider" style={{ color: '#F59E0B' }}>PLAYER {activePlayer.id}</span>
         <span className="text-white/40 text-xs">·</span><span className="text-white/60 text-xs capitalize">{activePlayer.penType}</span>
       </div>
 
@@ -360,7 +357,7 @@ export default function MatterEngine() {
           const isActive = activeTurnIndex === i && !isOut;
           return (
             <div key={p.id} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-200"
-              style={{ background: isOut ? 'rgba(0,0,0,0.4)' : isActive ? PLAYER_COLORS[i] + '35' : 'rgba(0,0,0,0.5)', color: isOut ? '#444' : PLAYER_COLORS[i], border: `1px solid ${isOut ? '#333' : PLAYER_COLORS[i] + '50'}`, transform: isActive ? 'scale(1.08)' : 'scale(1)', textDecoration: isOut ? 'line-through' : 'none' }}>
+              style={{ background: isOut ? 'rgba(0,0,0,0.4)' : isActive ? '#F59E0B35' : 'rgba(0,0,0,0.5)', color: isOut ? '#444' : '#F59E0B', border: `1px solid ${isOut ? '#333' : '#F59E0B50'}`, transform: isActive ? 'scale(1.08)' : 'scale(1)', textDecoration: isOut ? 'line-through' : 'none' }}>
               {isOut ? '💀' : `P${p.id}`} · {p.penType}
             </div>
           );
@@ -376,9 +373,9 @@ export default function MatterEngine() {
             <div key={p.id} className="flex flex-col items-center gap-0.5 p-1.5 rounded-lg text-xs font-bold transition-all duration-300 rotate-90"
               style={{ 
                 background: isOut ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.6)', 
-                color: isOut ? '#444' : PLAYER_COLORS[i], 
-                border: `1.5px solid ${isOut ? '#333' : isActive ? PLAYER_COLORS[i] : PLAYER_COLORS[i] + '30'}`, 
-                boxShadow: isActive ? `0 0 15px ${PLAYER_COLORS[i]}60` : 'none',
+                color: isOut ? '#444' : '#F59E0B', 
+                border: `1.5px solid ${isOut ? '#333' : isActive ? '#F59E0B' : '#F59E0B' + '30'}`, 
+                boxShadow: isActive ? `0 0 15px #F59E0B60` : 'none',
                 transform: isActive ? 'scale(1.1)' : 'scale(1)', 
                 textDecoration: isOut ? 'line-through' : 'none' 
               }}>
