@@ -75,13 +75,13 @@ export default function MatterEngine() {
     const isPortrait = height > width;
     
     // Spawn at a fixed safe distance from the edge so pens never spawn already falling off.
-    const safeX = Math.min(200, width * 0.3);
-    const safeY = Math.min(250, height * 0.3);
+    const safeX = Math.min(100, width * 0.15);
+    const safeY = Math.min(120, height * 0.2);
 
     const spawns = isPortrait 
       ? [
-          { x: width / 2, y: height - safeY, angle: 0 }, // Player 1 at bottom
-          { x: width / 2, y: safeY, angle: Math.PI }, // Player 2 at top
+          { x: width / 2, y: height - safeY, angle: Math.PI / 2 }, // Player 1 at bottom, sideways
+          { x: width / 2, y: safeY, angle: -Math.PI / 2 }, // Player 2 at top, sideways
           { x: safeX, y: height / 2, angle: Math.PI / 2 },
           { x: width - safeX, y: height / 2, angle: -Math.PI / 2 },
         ]
@@ -95,7 +95,7 @@ export default function MatterEngine() {
     penBodiesRef.current = [];
     players.forEach((player, i) => {
       if (i < spawns.length) {
-        const pen = createPen(spawns[i].x, spawns[i].y, player, spawns[i].angle);
+        const pen = createPen(player, spawns[i].x, spawns[i].y, spawns[i].angle);
         Matter.Composite.add(world, pen);
         penBodiesRef.current.push({ body: pen, penType: player.penType, playerId: player.id });
       }
@@ -212,10 +212,10 @@ export default function MatterEngine() {
         const cropTop = imgH * 0.01;
         const cropHeight = imgH * 0.98;
 
-        // Visual width made MUCH larger to match wider physics body 
-        // and make it easy for users to flick the edges!
-        const drawH = 340;
-        const drawW = 100;
+        // Visual width made proportional to the new physics size (40x160)
+        // We draw it slightly larger than physics body so they look nice
+        const drawH = 200;
+        const drawW = 60;
 
         ctx.save();
         ctx.translate(x, y);

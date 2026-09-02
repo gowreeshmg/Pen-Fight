@@ -1,13 +1,9 @@
 import Matter from 'matter-js';
 import { PenType, PEN_CONFIGS, Player } from '@/store/gameStore';
 
-export const createPen = (x: number, y: number, player: Player, angle: number = 0) => {
-  const config = PEN_CONFIGS[player.penType];
+export const createPen = (player: Player, x: number, y: number, angle: number, width = 40, height = 160) => {
+  const config = PEN_CONFIGS[player.penType] || PEN_CONFIGS['butterflow'];
   
-  // Physics body matches the new wider visual representation
-  const width = 60;
-  const height = 240;
-
   const penOptions = {
     mass: config.weight,
     frictionAir: 0.005, // static base air friction
@@ -24,8 +20,8 @@ export const createPen = (x: number, y: number, player: Player, angle: number = 
   };
 
   if (player.penType === 'hero') {
-    const bodyPart = Matter.Bodies.rectangle(x, y, width, height - 40, { mass: config.weight * 0.3 });
-    const capPart = Matter.Bodies.rectangle(x, y - (height / 2) + 20, width + 8, 40, { mass: config.weight * 0.7 });
+    const bodyPart = Matter.Bodies.rectangle(x, y, width, height - 20, { mass: config.weight * 0.3 });
+    const capPart = Matter.Bodies.rectangle(x, y - (height / 2) + 10, width + 4, 20, { mass: config.weight * 0.7 });
     return Matter.Body.create({
       ...penOptions,
       parts: [bodyPart, capPart],
