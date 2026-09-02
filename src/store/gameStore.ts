@@ -11,20 +11,20 @@ export interface PenStats {
 }
 
 export const PEN_CONFIGS: Record<PenType, PenStats> = {
-  // Gripper: Heavy, High Friction, Medium Speed
-  gripper:    { weight: 1.4,  restitution: 0.4, speedMultiplier: 1.1, gripMultiplier: 0.9 },
-  // Parker: Super Heavy, Medium Friction, Low Speed
-  parker:     { weight: 2.2,  restitution: 0.2, speedMultiplier: 1.1, gripMultiplier: 0.7 },
-  // Butterflow: Medium, Low Friction, High Speed
-  butterflow: { weight: 1.2,  restitution: 0.5, speedMultiplier: 1.15, gripMultiplier: 0.6 },
-  // Hero: Very Heavy, Medium Friction, Medium Speed
-  hero:       { weight: 1.8,  restitution: 0.3, speedMultiplier: 1.1, gripMultiplier: 0.8 },
-  // Pinpoint: Light, Low Friction, Very High Speed
-  pinpoint:   { weight: 1.0,  restitution: 0.6, speedMultiplier: 1.2, gripMultiplier: 0.5 },
-  // Trimax: Heavy, Medium Friction, High Speed
-  trimax:     { weight: 1.6,  restitution: 0.3, speedMultiplier: 1.15, gripMultiplier: 0.7 },
-  // V7: Very Light, Very Low Friction, Extreme Speed
-  v7:         { weight: 0.8,  restitution: 0.8, speedMultiplier: 1.3, gripMultiplier: 0.4 },
+  // Gripper: Heavy, High Friction, Medium Speed — travels ~730px at 100%
+  gripper:    { weight: 1.4,  restitution: 0.4, speedMultiplier: 0.90, gripMultiplier: 0.20 },
+  // Parker: Super Heavy, Medium Friction, Slow Speed — travels ~650px at 100%
+  parker:     { weight: 2.2,  restitution: 0.2, speedMultiplier: 0.80, gripMultiplier: 0.18 },
+  // Butterflow: Medium, Low Friction, High Speed — travels ~945px at 100%
+  butterflow: { weight: 1.2,  restitution: 0.5, speedMultiplier: 1.05, gripMultiplier: 0.13 },
+  // Hero: Very Heavy, Medium Friction, Medium Speed — travels ~690px at 100%
+  hero:       { weight: 1.8,  restitution: 0.3, speedMultiplier: 0.85, gripMultiplier: 0.19 },
+  // Pinpoint: Light, Low Friction, Very High Speed — travels ~1020px at 100% (just off screen)
+  pinpoint:   { weight: 1.0,  restitution: 0.6, speedMultiplier: 1.10, gripMultiplier: 0.11 },
+  // Trimax: Heavy, Medium Friction, High Speed — travels ~800px at 100%
+  trimax:     { weight: 1.6,  restitution: 0.3, speedMultiplier: 0.95, gripMultiplier: 0.17 },
+  // V7: Very Light, Very Low Friction, Extreme Speed — travels ~1160px at 100% (well off screen)
+  v7:         { weight: 0.8,  restitution: 0.8, speedMultiplier: 1.20, gripMultiplier: 0.08 },
 };
 
 // Table friction applied per-frame as a velocity damping factor

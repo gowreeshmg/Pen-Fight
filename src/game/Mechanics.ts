@@ -103,17 +103,17 @@ export class SlingshotMechanic {
     const labelParts = this.selectedBody.label.split('_');
     const penType = labelParts.length > 2 ? (labelParts[2] as PenType) : 'butterflow';
     const stats = PEN_CONFIGS[penType] || PEN_CONFIGS['butterflow'];
-    // Use square root curve so that distance (which scales with v^2) scales linearly with applied force percentage.
-    // 10% force -> 10% distance. 50% force -> 50% distance. 100% force -> 100% distance.
+
+    // LINEAR power curve: 10% force = 10% velocity = ~1% distance.
+    // This ensures small inputs move the pen very little, and 100% moves it all the way.
     const powerRatio = clampedDist / MAX_PULL;
-    const powerCurve = Math.sqrt(powerRatio);
     
-    // Base max speed set to 65. Mass penalty removed (EXP=0) because individual pen stats (speedMultiplier & gripMultiplier)
-    // naturally handle the heavy vs light differences perfectly now.
-    const BASE_MAX_SPEED = 65; 
+    // Base max speed = 55. Each pen's speedMultiplier and gripMultiplier
+    // are precisely calibrated in gameStore.ts to hit specific pixel targets.
+    // e.g. pinpoint@100% = ~1020px (just off screen), parker@100% = ~650px
+    const BASE_MAX_SPEED = 55;
     
-    // Explicit speed multiplier from pen stats
-    const rawSpeed = powerCurve * BASE_MAX_SPEED;
+    const rawSpeed = powerRatio * BASE_MAX_SPEED;
     const finalSpeed = rawSpeed * stats.speedMultiplier;
 
     // Direction is opposite of drag (pull back = shoot forward)
@@ -137,7 +137,7 @@ export class SlingshotMechanic {
     // Tamed the spin multiplier significantly to prevent the "beyblade" effect.
     // It will now rotate naturally a few times when hit on the edges, but won't spin thousands of times.
     const spinMultiplier = 0.004; 
-    const spin = spinBase * spinMultiplier * powerCurve;
+    const spin = spinBase * spinMultiplier * powerRatio;
     
     Matter.Body.setAngularVelocity(this.selectedBody, spin);
 
