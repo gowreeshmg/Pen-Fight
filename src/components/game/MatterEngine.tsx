@@ -294,7 +294,7 @@ export default function MatterEngine() {
   const powerColor = power < 40 ? '#10B981' : power < 70 ? '#F59E0B' : '#EF4444';
 
   return (
-    <div className="relative w-full h-full overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden" style={{ touchAction: 'none' }}>
       <div ref={sceneRef} className="absolute inset-0" style={{ zIndex: 10 }} />
 
       {winner !== null && (

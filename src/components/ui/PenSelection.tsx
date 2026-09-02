@@ -130,7 +130,7 @@ export default function PenSelection() {
   // ───── SETUP SCREEN ─────
   if (phase === 'setup') {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-neutral-950 relative overflow-hidden">
+      <div className="min-h-[100dvh] flex flex-col items-center justify-center bg-neutral-950 relative overflow-y-auto py-12">
         <div className="absolute inset-0 bg-cover bg-center opacity-5" style={{ backgroundImage: 'url(/desk.jpg)' }} />
         <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-sm w-full">
           <div className="text-5xl mb-6 select-none">✒️</div>
@@ -177,7 +177,7 @@ export default function PenSelection() {
   // ───── ARENA SELECTION SCREEN ─────
   if (phase === 'arena') {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-neutral-950 relative overflow-hidden">
+      <div className="min-h-[100dvh] flex flex-col items-center justify-center bg-neutral-950 relative overflow-y-auto py-12">
         <div className="absolute inset-0 bg-cover bg-center opacity-5" style={{ backgroundImage: 'url(/desk.jpg)' }} />
         <div className="relative z-10 flex flex-col items-center w-full max-w-4xl px-6">
           <h1 className="text-3xl font-black text-white tracking-tight mb-8">Select Battlefield</h1>
@@ -223,7 +223,7 @@ export default function PenSelection() {
   const selectedPenData = pens.find((p) => p.id === selectedPen)!;
 
   return (
-    <div className="h-screen flex flex-col bg-neutral-950 overflow-hidden">
+    <div className="h-[100dvh] flex flex-col bg-neutral-950 overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center opacity-5" style={{ backgroundImage: 'url(/desk.jpg)' }} />
 
       <div className="relative z-10 flex-shrink-0 pt-6 pb-3 px-6 flex flex-col items-center">
