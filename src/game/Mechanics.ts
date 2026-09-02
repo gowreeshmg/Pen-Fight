@@ -22,13 +22,14 @@ export class SlingshotMechanic {
     this.currentPlayerId = id;
   }
 
-  attach(
+  public attach(
     canvas: HTMLCanvasElement,
     onUpdateTrajectory: (start: Point | null, end: Point | null, power: number) => void,
     onTurnComplete: () => void
   ) {
     this.onUpdateTrajectory = onUpdateTrajectory;
     this.onTurnComplete = onTurnComplete;
+    
     canvas.addEventListener('mousedown', this.onMouseDown);
     canvas.addEventListener('mousemove', this.onMouseMove);
     canvas.addEventListener('mouseup', this.onMouseUp);
@@ -38,7 +39,7 @@ export class SlingshotMechanic {
     canvas.addEventListener('touchend', this.onTouchEnd);
   }
 
-  detach(canvas: HTMLCanvasElement) {
+  public detach(canvas: HTMLCanvasElement) {
     canvas.removeEventListener('mousedown', this.onMouseDown);
     canvas.removeEventListener('mousemove', this.onMouseMove);
     canvas.removeEventListener('mouseup', this.onMouseUp);

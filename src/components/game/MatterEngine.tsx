@@ -41,6 +41,13 @@ export default function MatterEngine() {
   const loadImage = (src: string): Promise<HTMLImageElement> => new Promise((res) => { const img = new Image(); img.onload = () => res(img); img.src = src; });
 
   useEffect(() => {
+    // Attempt to lock screen orientation to portrait on mobile devices
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock('portrait-primary').catch(() => {
+        // Silently fail if not supported or not in fullscreen
+      });
+    }
+
     if (!sceneRef.current || players.length === 0) return;
 
     const width = sceneRef.current.clientWidth;
@@ -86,8 +93,8 @@ export default function MatterEngine() {
           { x: width - safeX, y: height / 2, angle: -Math.PI / 2 },
         ]
       : [
-          { x: safeX, y: height / 2, angle: Math.PI / 2 }, // Player 1 on left
-          { x: width - safeX, y: height / 2, angle: -Math.PI / 2 }, // Player 2 on right
+          { x: safeX, y: height / 2, angle: 0 }, // Player 1 on left, vertical
+          { x: width - safeX, y: height / 2, angle: Math.PI }, // Player 2 on right, vertical
           { x: width / 2, y: safeY, angle: Math.PI },
           { x: width / 2, y: height - safeY, angle: 0 },
         ];
@@ -331,13 +338,15 @@ export default function MatterEngine() {
         </div>
       )}
 
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 px-5 py-2.5 rounded-full" style={{ background: 'rgba(0,0,0,0.78)', backdropFilter: 'blur(12px)', border: `1.5px solid ${activeColor}60`, boxShadow: `0 4px 24px ${activeColor}30` }}>
+      {/* Desktop Top Active Indicator */}
+      <div className="hidden md:flex absolute top-4 left-1/2 -translate-x-1/2 z-30 items-center gap-3 px-5 py-2.5 rounded-full" style={{ background: 'rgba(0,0,0,0.78)', backdropFilter: 'blur(12px)', border: `1.5px solid ${activeColor}60`, boxShadow: `0 4px 24px ${activeColor}30` }}>
         <div className="w-2.5 h-2.5 rounded-full animate-pulse" style={{ background: activeColor }} />
         <span className="font-bold text-sm tracking-wider" style={{ color: activeColor }}>PLAYER {activePlayer.id}</span>
         <span className="text-white/40 text-xs">·</span><span className="text-white/60 text-xs capitalize">{activePlayer.penType}</span>
       </div>
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+      {/* Desktop Bottom Status Bar */}
+      <div className="hidden md:flex absolute bottom-4 left-1/2 -translate-x-1/2 z-30 gap-2">
         {players.map((p, i) => {
           const isOut = eliminated.includes(p.id);
           const isActive = activeTurnIndex === i && !isOut;
@@ -350,8 +359,34 @@ export default function MatterEngine() {
         })}
       </div>
 
-      <div className="absolute top-4 left-4 z-30 text-xs text-white/50 bg-black/50 backdrop-blur px-3 py-2 rounded-lg">Drag back on P{activePlayer.id}'s pen<br /><span className="text-amber-400/80">Tip: Click edge for spin!</span></div>
-      <div className="absolute top-4 right-4 z-30"><a href="/" className="px-5 py-2 bg-neutral-900/90 hover:bg-neutral-800 text-white text-sm rounded-lg font-medium transition-colors border border-neutral-700">End Match</a></div>
+      {/* Mobile Right Vertical Status Bar */}
+      <div className="flex md:hidden absolute right-4 top-1/2 -translate-y-1/2 z-30 flex-col gap-3">
+        {players.map((p, i) => {
+          const isOut = eliminated.includes(p.id);
+          const isActive = activeTurnIndex === i && !isOut;
+          return (
+            <div key={p.id} className="flex flex-col items-center gap-1 p-2 rounded-xl text-xs font-bold transition-all duration-300"
+              style={{ 
+                background: isOut ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.6)', 
+                color: isOut ? '#444' : PLAYER_COLORS[i], 
+                border: `1.5px solid ${isOut ? '#333' : isActive ? PLAYER_COLORS[i] : PLAYER_COLORS[i] + '30'}`, 
+                boxShadow: isActive ? `0 0 15px ${PLAYER_COLORS[i]}60` : 'none',
+                transform: isActive ? 'scale(1.1)' : 'scale(1)', 
+                textDecoration: isOut ? 'line-through' : 'none' 
+              }}>
+              <span className="text-base">{isOut ? '💀' : `P${p.id}`}</span>
+              <span className="text-[9px] uppercase tracking-wider">{p.penType.substring(0, 4)}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="hidden md:block absolute top-4 left-4 z-30 text-xs text-white/50 bg-black/50 backdrop-blur px-3 py-2 rounded-lg">Drag back on P{activePlayer.id}'s pen<br /><span className="text-amber-400/80">Tip: Click edge for spin!</span></div>
+      
+      {/* End Match Button - Rotated on Mobile */}
+      <div className="absolute top-6 right-2 md:top-4 md:right-4 z-30 origin-top-right rotate-90 md:rotate-0 flex">
+        <a href="/" className="px-5 py-2 bg-neutral-900/90 hover:bg-neutral-800 text-white text-sm rounded-lg font-medium transition-colors border border-neutral-700 whitespace-nowrap">End Match</a>
+      </div>
     </div>
   );
 }
