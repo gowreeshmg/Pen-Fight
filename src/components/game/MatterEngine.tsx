@@ -34,6 +34,8 @@ export default function MatterEngine() {
   const [trajectory, setTrajectory] = useState<{ start: { x: number; y: number } | null; end: { x: number; y: number } | null; }>({ start: null, end: null });
   const [eliminated, setEliminated] = useState<number[]>([]);
   const [winner, setWinner] = useState<number | null>(null);
+  
+  const turnPendingRef = useRef(false);
 
   useEffect(() => { currentTurnRef.current = currentTurn; }, [currentTurn]);
 
@@ -159,23 +161,29 @@ export default function MatterEngine() {
         }
       });
 
-      // Check for winner ONLY when all pens have come to a complete rest.
-      // This allows for simultaneous eliminations (draws) instead of instant wins.
+      // Check for winner and handle deferred turns ONLY when all pens have come to a complete rest.
       let isMoving = false;
       [...penBodiesRef.current].forEach(({ body }) => {
         if (body.speed > 0.1 || Math.abs(body.angularVelocity) > 0.1) isMoving = true;
       });
 
-      if (!isMoving && winner === null) {
-        setEliminated((prev) => {
-          const alive = players.filter((p) => !prev.includes(p.id));
-          if (alive.length === 1 && players.length > 1) {
-            setWinner(alive[0].id);
-          } else if (alive.length === 0 && players.length > 1) {
-            setWinner(-1); // -1 signifies a DRAW
-          }
-          return prev;
-        });
+      if (!isMoving) {
+        if (turnPendingRef.current) {
+          turnPendingRef.current = false;
+          nextTurn();
+        }
+
+        if (winner === null) {
+          setEliminated((prev) => {
+            const alive = players.filter((p) => !prev.includes(p.id));
+            if (alive.length === 1 && players.length > 1) {
+              setWinner(alive[0].id);
+            } else if (alive.length === 0 && players.length > 1) {
+              setWinner(-1); // -1 signifies a DRAW
+            }
+            return prev;
+          });
+        }
       }
     });
 
@@ -248,13 +256,11 @@ export default function MatterEngine() {
         ctx.shadowOffsetY = 0;
 
         // Active Player Glow Dot
-        const playerIndex = players.findIndex((p) => p.id === playerId);
-        const color = PLAYER_COLORS[playerIndex] || '#F59E0B';
         if (playerId === activePlayerId) {
           ctx.beginPath();
           ctx.arc(0, -drawH / 2 - 20, 6, 0, Math.PI * 2);
-          ctx.fillStyle = color;
-          ctx.shadowColor = color;
+          ctx.fillStyle = '#F59E0B';
+          ctx.shadowColor = '#F59E0B';
           ctx.shadowBlur = 15;
           ctx.fill();
         }
@@ -273,7 +279,7 @@ export default function MatterEngine() {
     slingshot.attach(
       render.canvas,
       (start, end, pw) => { setTrajectory({ start, end }); setPower(pw); },
-      () => { nextTurn(); setPower(0); setTrajectory({ start: null, end: null }); }
+      () => { turnPendingRef.current = true; setPower(0); setTrajectory({ start: null, end: null }); }
     );
 
     return () => {
