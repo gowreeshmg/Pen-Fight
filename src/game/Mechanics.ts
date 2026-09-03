@@ -105,15 +105,16 @@ export class SlingshotMechanic {
     const stats = PEN_CONFIGS[penType] || PEN_CONFIGS['butterflow'];
 
     // LINEAR power curve: force % directly maps to initial velocity.
-    // 10% force = 10% velocity. 24% force = 24% of max velocity → pen moves ~24% of max distance.
     const powerRatio = clampedDist / MAX_PULL;
     
-    // BASE_MAX_SPEED = 22: calibrated so that a "high speed" pen (butterflow, speedMult=1.05)
-    // at 100% crosses the playfield (~450px on mobile), and at 24% only moves ~100px.
-    // "Extreme speed" pen (v7, speedMult=1.20) at 100% goes just beyond the screen edge.
+    // Weight is now a physics factor: heavier pens get less velocity for the same force (F=ma → a=F/m).
+    // Using sqrt so the effect is noticeable but not overwhelming.
+    // parker(2.2) gets ~33% less speed than pinpoint(1.0) at the same force.
+    // v7(0.8) gets ~12% MORE speed than pinpoint(1.0) — it's lighter than average.
     const BASE_MAX_SPEED = 22;
+    const weightDivisor = Math.pow(stats.weight, 0.5);
     
-    const rawSpeed = powerRatio * BASE_MAX_SPEED;
+    const rawSpeed = powerRatio * BASE_MAX_SPEED / weightDivisor;
     const finalSpeed = rawSpeed * stats.speedMultiplier;
 
     // Direction is opposite of drag (pull back = shoot forward)

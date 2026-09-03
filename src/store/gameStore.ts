@@ -11,20 +11,20 @@ export interface PenStats {
 }
 
 export const PEN_CONFIGS: Record<PenType, PenStats> = {
-  // Gripper: Heavy, High Friction, Medium Speed — 100%: ~320px | 50%: ~123px | 10%: ~10px
-  gripper:    { weight: 1.4,  restitution: 0.4, speedMultiplier: 1.169, gripMultiplier: 0.20 },
-  // Parker: Super Heavy, Slow Speed — 100%: ~280px | 50%: ~107px | 10%: ~8px
-  parker:     { weight: 2.2,  restitution: 0.2, speedMultiplier: 1.029, gripMultiplier: 0.18 },
-  // Butterflow: Low Friction, High Speed — 100%: ~450px (crosses screen) | 50%: ~191px | 10%: ~19px
-  butterflow: { weight: 1.2,  restitution: 0.5, speedMultiplier: 1.338, gripMultiplier: 0.10 },
-  // Hero: Very Heavy, Medium Friction — 100%: ~300px | 50%: ~115px | 10%: ~9px
-  hero:       { weight: 1.8,  restitution: 0.3, speedMultiplier: 1.099, gripMultiplier: 0.19 },
-  // Pinpoint: Light, Very Low Friction, Very High Speed — 100%: ~480px (near edge) | 50%: ~206px | 10%: ~21px
-  pinpoint:   { weight: 1.0,  restitution: 0.6, speedMultiplier: 1.390, gripMultiplier: 0.09 },
-  // Trimax: Heavy, Medium Speed — 100%: ~370px | 50%: ~147px | 10%: ~12px
-  trimax:     { weight: 1.6,  restitution: 0.3, speedMultiplier: 1.261, gripMultiplier: 0.17 },
-  // V7: Very Light, Extreme Speed, Ultra-Low Friction — 100%: ~510px (off screen) | 50%: ~227px | 10%: ~26px
-  v7:         { weight: 0.8,  restitution: 0.8, speedMultiplier: 1.388, gripMultiplier: 0.06 },
+  // Gripper: Heavy(1.4), High Friction — 100%: ~320px | 50%: ~123px | 10%: ~10px
+  gripper:    { weight: 1.4,  restitution: 0.4, speedMultiplier: 1.383, gripMultiplier: 0.20 },
+  // Parker: Super Heavy(2.2), Slowest — 100%: ~260px | 50%: ~99px | 10%: ~8px
+  parker:     { weight: 2.2,  restitution: 0.2, speedMultiplier: 1.443, gripMultiplier: 0.18 },
+  // Butterflow: Medium(1.2), Low Friction, High Speed — 100%: ~440px (crosses screen) | 50%: ~186px | 10%: ~18px
+  butterflow: { weight: 1.2,  restitution: 0.5, speedMultiplier: 1.438, gripMultiplier: 0.10 },
+  // Hero: Very Heavy(1.8), Medium Friction — 100%: ~290px | 50%: ~111px | 10%: ~9px
+  hero:       { weight: 1.8,  restitution: 0.3, speedMultiplier: 1.437, gripMultiplier: 0.19 },
+  // Pinpoint: Light(1.0), Very Low Friction, Very High Speed — 100%: ~475px (near edge) | 50%: ~204px | 10%: ~21px
+  pinpoint:   { weight: 1.0,  restitution: 0.6, speedMultiplier: 1.378, gripMultiplier: 0.09 },
+  // Trimax: Heavy(1.6), Medium Friction, Med-High Speed — 100%: ~370px | 50%: ~147px | 10%: ~12px
+  trimax:     { weight: 1.6,  restitution: 0.3, speedMultiplier: 1.594, gripMultiplier: 0.17 },
+  // V7: Very Light(0.8), Extreme Speed, Ultra-Low Friction — 100%: ~510px (off screen) | 50%: ~227px | 10%: ~26px
+  v7:         { weight: 0.8,  restitution: 0.8, speedMultiplier: 1.242, gripMultiplier: 0.06 },
 };
 
 // Table friction applied per-frame as a velocity damping factor
