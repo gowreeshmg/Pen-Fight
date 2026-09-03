@@ -58,11 +58,26 @@ export class SlingshotMechanic {
     const mousePos = this.getCanvasPoint(clientX, clientY, canvas);
     const bodies = Matter.Composite.allBodies(this.engine.world);
     const targetLabel = `player_${this.currentPlayerId}`;
-    const playerPens = bodies.filter((b) => b.label.startsWith(targetLabel));
-    const clicked = Matter.Query.point(playerPens, mousePos);
 
-    if (clicked.length > 0) {
-      this.selectedBody = clicked[0].parent ?? clicked[0];
+    // Find the current player's pen body by label
+    const playerPens = bodies.filter((b) => b.label.startsWith(targetLabel));
+    if (playerPens.length === 0) return;
+
+    // Use bounds-based detection with a tolerance pad so clicking anywhere on the
+    // pen — including corners and thin tips — reliably grabs it.
+    const TOUCH_PAD = 10; // extra pixels beyond the body bounds (helps on mobile)
+    const hit = playerPens.find((b) => {
+      const { min, max } = b.bounds;
+      return (
+        mousePos.x >= min.x - TOUCH_PAD &&
+        mousePos.x <= max.x + TOUCH_PAD &&
+        mousePos.y >= min.y - TOUCH_PAD &&
+        mousePos.y <= max.y + TOUCH_PAD
+      );
+    });
+
+    if (hit) {
+      this.selectedBody = hit;
       this.isDragging = true;
       this.dragStartPoint = { ...mousePos };
       this.dragCurrentPoint = { ...mousePos };
