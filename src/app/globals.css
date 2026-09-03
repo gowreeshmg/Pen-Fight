@@ -22,29 +22,3 @@ html, body {
   margin: 0;
   padding: 0;
 }
-
-/* ============================================================
-   LANDSCAPE LOCK — CSS rotation trick.
-   When device is held portrait (height > width), we rotate the
-   entire app 90° so the game always appears in landscape mode.
-   This works even when the device's auto-rotate is ON.
-   ============================================================ */
-#landscape-wrapper {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-}
-
-@media (orientation: portrait) {
-  #landscape-wrapper {
-    /* Swap width/height then rotate 90° clockwise */
-    width: 100vh;
-    height: 100vw;
-    transform: rotate(90deg);
-    transform-origin: top left;
-    position: fixed;
-    top: 0;
-    left: 100vw; /* shift right so after rotation it fills screen from top-left */
-    overflow: hidden;
-  }
-}
