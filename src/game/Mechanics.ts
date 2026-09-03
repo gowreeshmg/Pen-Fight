@@ -104,14 +104,14 @@ export class SlingshotMechanic {
     const penType = labelParts.length > 2 ? (labelParts[2] as PenType) : 'butterflow';
     const stats = PEN_CONFIGS[penType] || PEN_CONFIGS['butterflow'];
 
-    // LINEAR power curve: 10% force = 10% velocity = ~1% distance.
-    // This ensures small inputs move the pen very little, and 100% moves it all the way.
+    // LINEAR power curve: force % directly maps to initial velocity.
+    // 10% force = 10% velocity. 24% force = 24% of max velocity → pen moves ~24% of max distance.
     const powerRatio = clampedDist / MAX_PULL;
     
-    // Base max speed = 55. Each pen's speedMultiplier and gripMultiplier
-    // are precisely calibrated in gameStore.ts to hit specific pixel targets.
-    // e.g. pinpoint@100% = ~1020px (just off screen), parker@100% = ~650px
-    const BASE_MAX_SPEED = 55;
+    // BASE_MAX_SPEED = 22: calibrated so that a "high speed" pen (butterflow, speedMult=1.05)
+    // at 100% crosses the playfield (~450px on mobile), and at 24% only moves ~100px.
+    // "Extreme speed" pen (v7, speedMult=1.20) at 100% goes just beyond the screen edge.
+    const BASE_MAX_SPEED = 22;
     
     const rawSpeed = powerRatio * BASE_MAX_SPEED;
     const finalSpeed = rawSpeed * stats.speedMultiplier;

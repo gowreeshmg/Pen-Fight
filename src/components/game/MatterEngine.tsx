@@ -147,27 +147,36 @@ export default function MatterEngine() {
       const { width: W, height: H } = canvasSizeRef.current;
       [...penBodiesRef.current].forEach(({ body, playerId }) => {
         const { x, y } = body.position;
-        // Detection boundary is EXACTLY the screen edge.
-        // If the center of the pen (x, y) crosses the edge, it means half of it is off the bench, 
-        // so gravity takes over and it falls!
+        // When a pen exits the screen boundary, remove it from the physics world immediately
+        // (so forces stop being applied), but defer the elimination until everything settles.
         if (x < 0 || x > W || y < 0 || y > H) {
           Matter.World.remove(world, body);
           penBodiesRef.current = penBodiesRef.current.filter((p) => p.playerId !== playerId);
-          eliminatePlayer(playerId);
+          // Queue elimination instead of calling it right now — game continues until all pens rest
           setEliminated((prev) => {
-            const next = [...prev, playerId];
-            return next;
+            if (prev.includes(playerId)) return prev;
+            return [...prev, playerId];
           });
         }
       });
 
-      // Check for winner and handle deferred turns ONLY when all pens have come to a complete rest.
+      // Only resolve turns and check for a winner once ALL remaining pens have stopped.
+      // This way: if a pen knock causes another pen to also exit, the game waits
+      // for everything to settle before declaring results.
       let isMoving = false;
       [...penBodiesRef.current].forEach(({ body }) => {
         if (body.speed > 0.1 || Math.abs(body.angularVelocity) > 0.1) isMoving = true;
       });
 
       if (!isMoving) {
+        // Sync any pending eliminations to the game store now that things are settled
+        setEliminated((prev) => {
+          prev.forEach((playerId) => {
+            eliminatePlayer(playerId);
+          });
+          return prev;
+        });
+
         if (turnPendingRef.current) {
           turnPendingRef.current = false;
           nextTurn();
