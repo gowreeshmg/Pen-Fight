@@ -42,9 +42,9 @@ export default function MatterEngine() {
   const loadImage = (src: string): Promise<HTMLImageElement> => new Promise((res) => { const img = new Image(); img.onload = () => res(img); img.src = src; });
 
   useEffect(() => {
-    // Attempt to lock screen orientation to portrait on mobile devices
+    // Attempt to lock screen orientation to landscape on mobile devices
     if (screen.orientation && (screen.orientation as any).lock) {
-      (screen.orientation as any).lock('portrait-primary').catch(() => {
+      (screen.orientation as any).lock('landscape-primary').catch(() => {
         // Silently fail if not supported or not in fullscreen
       });
     }

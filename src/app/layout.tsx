@@ -41,7 +41,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {/* #landscape-wrapper applies the CSS rotation lock defined in globals.css */}
+        <div id="landscape-wrapper">{children}</div>
+      </body>
     </html>
   );
 }
