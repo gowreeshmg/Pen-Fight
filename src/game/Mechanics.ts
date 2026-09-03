@@ -51,7 +51,16 @@ export class SlingshotMechanic {
 
   private getCanvasPoint(clientX: number, clientY: number, canvas: HTMLCanvasElement): Point {
     const rect = canvas.getBoundingClientRect();
-    return { x: clientX - rect.left, y: clientY - rect.top };
+    // Scale from CSS pixels to canvas physics pixels.
+    // If the canvas element is CSS-scaled (e.g. 800px canvas shown at 400px),
+    // we must multiply by this ratio or click coordinates will be wrong —
+    // especially at the tips/corners which are far from the canvas origin.
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY,
+    };
   }
 
   private handleStart(clientX: number, clientY: number, canvas: HTMLCanvasElement) {
