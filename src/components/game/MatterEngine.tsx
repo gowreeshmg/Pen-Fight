@@ -102,11 +102,13 @@ export default function MatterEngine() {
 
     const penW = 60; // Wide enough to press easily on all devices
     const penH = isPortrait ? 160 : 240; // Shorter on mobile so they don't overlap
+    // The visual is drawn at penH * 1.3 — the physics body MUST match so corners are clickable
+    const penBodyH = Math.round(penH * 1.3);
 
     penBodiesRef.current = [];
     players.forEach((player, i) => {
       if (i < spawns.length) {
-        const pen = createPen(player, spawns[i].x, spawns[i].y, spawns[i].angle, penW, penH);
+        const pen = createPen(player, spawns[i].x, spawns[i].y, spawns[i].angle, penW, penBodyH);
         Matter.Composite.add(world, pen);
         penBodiesRef.current.push({ body: pen, penType: player.penType, playerId: player.id });
       }
